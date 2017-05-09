@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    class DirectionalLamp: Lamp
+    {
+        V3 direction;
+
+        public DirectionalLamp(Couleur _couleur, V3 _positon, List<LightModel> _lightModels,V3 _direction) 
+            : base(_couleur, _positon, _lightModels, _direction)
+        {
+            
+
+        }
+
+        public override void apply(ref Point p)
+        {
+            foreach (LightModel lightModel in this.lightModels)
+            {
+               
+                lightModel.apply(ref p,this);
+                
+                
+            }
+           
+        }
+    }
+}

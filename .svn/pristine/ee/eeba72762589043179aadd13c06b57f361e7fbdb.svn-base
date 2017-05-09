@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    struct Point
+    {
+        public V3 position;
+        public Couleur couleur;
+        public Sphere sphere;
+        public float u, v;
+        public V3 normal;
+    }
+    class Sphere
+    {
+        public Texture texture;
+        public float rayon;
+        public V3 centre;
+        public Couleur couleur;
+        public BumpMapping bumpMap;
+
+        public Sphere(V3 _centre,float _rayon,Couleur _couleur,Texture _texture = null, BumpMapping _bumpMap = null)
+        {
+            this.centre = _centre;
+            this.rayon = _rayon;
+            this.couleur = _couleur;
+            this.texture =  _texture;
+            this.bumpMap = _bumpMap;
+        }
+
+        public Couleur getPointBasicColor(Point p)
+        {
+            if(texture == null)
+                return couleur;
+
+            float  u_texture, v_texture;
+            
+
+            u_texture = p.u / (2 * IMA.PI);
+            v_texture = (p.v + IMA.PI / 2) * (1 / IMA.PI);
+
+            return texture.LireCouleur(u_texture,1-v_texture);
+
+        }
+
+        public Point generatePoint(float u, float v)
+        {
+            Point p = new Point();
+            p.couleur = new Couleur(0f, 0f, 0f);
+            p.normal = S(u, v);
+            p.sphere = this;
+            p.position = this.rayon * p.normal + this.centre;
+            p.u = u;
+            p.v = v;
+
+            if (this.bumpMap != null)
+                this.bumpMap.generateNewNormal(ref p);
+
+            return p;
+        }
+
+        private  V3 S(float u, float v)
+        {
+            V3 result = new V3();
+            result.x = IMA.Cosf(v) * IMA.Cosf(u);
+            result.y = IMA.Cosf(v) * IMA.Sinf(u);
+            result.z = IMA.Sinf(v);
+            return result;
+
+        }
+
+    }
+}

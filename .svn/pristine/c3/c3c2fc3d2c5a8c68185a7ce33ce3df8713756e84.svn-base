@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    class Camera
+    {
+        public V3 origin;
+        public  V3 eyes;
+        public int larg,haut;
+        public float maxDist;
+        public  int[,] zBuffer;
+
+
+        public Camera(V3 _origin,int _larg,int _haut,float _maxDist)
+        {
+            this.origin = _origin;
+           
+            this.larg = _larg;
+            this.haut = _haut;
+            this.zBuffer = new int[larg, haut];
+            float distEyes = -1.5f * larg;
+            this.maxDist = _maxDist - distEyes;
+            this.eyes = new V3(_larg / 2, distEyes, _haut / 2);
+            init();
+        }
+
+        public Couleur rayCast(V3 camPos ,V3 DirRayon)
+        {
+            float t = maxDist;
+            float newt;
+            GameObject selectGameObject= null;
+            foreach (GameObject gameObject in ProjetEleve.scene.gameObjects)
+            {
+                try
+                {
+                    bool hit = gameObject.getIntersectPoint(camPos, DirRayon,out newt);
+                    if(hit)
+                    {
+                        t = newt;
+                        selectGameObject = gameObject;
+                    }
+                    
+                }
+                catch(Exception e)
+                {
+
+                }
+                
+            }
+            
+            if (selectGameObject == null)
+                return new Couleur();
+            float u, v;
+            V3 pPos = camPos + t * DirRayon;
+            selectGameObject.finduv(pPos, out u, out v);
+            Point p = selectGameObject.generatePoint(u, v);
+            
+           /* foreach (Lamp lamp in ProjetEleve.)
+                lamp.apply(ref p);*/
+            return p.couleur;
+        }
+
+        public void generateView()
+        {
+            Couleur C;
+            for (int x_ecran = 0; x_ecran <= larg ; x_ecran++) {
+                for (int y_ecran = 0; y_ecran <= haut ; y_ecran++)
+                {
+                    C = new Couleur();
+                    if (x_ecran == 600)
+                        Console.WriteLine();
+                    V3 PosPixScene = new V3(x_ecran, 0, y_ecran);
+                    
+                    V3 dirRayon = PosPixScene - eyes;
+                    dirRayon.Normalize();
+                    C = rayCast(eyes, dirRayon);
+                    BitmapEcran.DrawPixel(x_ecran, y_ecran, C);
+                }
+
+            }
+               
+        }
+        public void generateViewZBuffer()
+        {
+
+        }
+        public Boolean isDrew(Point p)
+        {
+            int ecran_x = (int)p.position.x;
+            int ecran_y = (int)p.position.y;
+            int ecran_depth = (int)p.position.y;
+
+            if (zBuffer[ecran_x, ecran_y] > ecran_depth && ecran_x >= 0 && ecran_x < larg && ecran_y >= 0 && ecran_y < haut)
+            {
+                zBuffer[ecran_x, ecran_y] = ecran_depth;
+                return true;
+            }
+
+            return false;
+
+        }
+
+
+
+        public void init()
+        {
+            for (int row = 0; row < zBuffer.GetLength(0); row++)
+            {
+                for (int col = 0; col < zBuffer.GetLength(1); col++)
+                {
+                    zBuffer[row, col] =(int) maxDist;
+                }
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    class Scene
+    {
+        public List<GameObject> gameObjects = new List<GameObject>();
+        public List<Lamp> lamps = new List<Lamp>();
+        public Camera mainCamera;
+        public float pas = 0.001f;
+
+        public Scene()
+        {
+        }
+
+        public void init()
+        {
+            int larg = BitmapEcran.GetWidth();
+            int haut = BitmapEcran.GetHeight();
+            mainCamera = new Camera(new V3(0, 0, 0), larg, haut, 3000);
+            
+            Texture testText = new Texture("uvtest.jpg");
+            Texture gold = new Texture("gold.jpg");
+            BumpMapping goldBump = new BumpMapping(new Texture("gold_bump.jpg"));
+            Texture lead = new Texture("lead.jpg");
+            BumpMapping leadBump = new BumpMapping(new Texture("lead_bump.jpg"));
+            BumpMapping bump38 = new BumpMapping(new Texture("bump.jpg"), 0.6f);
+            
+            Couleur Green = new Couleur(0.0f, 1.0f, 0.0f);
+            Couleur Red = new Couleur(1.0f, 0.0f, 0.0f);
+            
+            AmbiantLight ambiantLight = new AmbiantLight();
+            DiffuseLight diffuseLight = new DiffuseLight();
+            SpecularLight specularLight = new SpecularLight();
+
+            lamps.Add(
+              new LampAmbiant(
+                  new Couleur(0.20f, 0.20f, 0.20f),
+                  new V3(0, 0, 0),
+                  new List<LightModel> { ambiantLight }
+                  )
+              );
+
+            lamps.Add(
+                 new DirectionalLamp(
+                     new Couleur(1f, 1f, 1f),
+                     new V3(0, 0, 0),//pos
+                     new List<LightModel> { diffuseLight, specularLight }, // lights effects
+                     new V3(-1, 1, -1)//direction
+                     )
+                 );
+
+
+            gameObjects.Add(new Sphere(new V3(0, 200, 0), 200, Red, testText));
+            //gameObjects.Add(new Sphere(new V3(350, 500, 200), 200, Green, lead, leadBump));
+            //gameObjects.Add(new Rectangle(new V3(0, 250, 0), new V3(900, 0, 0), new V3(0, 0, 550), Green, lead, bump38));
+
+         
+        }
+
+        public void drawPoint(ref Point p)
+        {
+            
+            if (getCamera().isDrawn(p))
+            {
+                int ecran_x = (int)p.position.x;
+                int ecran_y = (int)p.position.z;
+                if(p.gameObject.bumpMap != null)
+                    p.gameObject.bumpMap.generateNewNormal(ref p);
+
+                foreach(Lamp l in lamps)
+                    l.apply(ref p);
+
+                BitmapEcran.DrawPixel(ecran_x, ecran_y, p.couleur);
+
+            }
+        }
+
+        public Camera getCamera()
+        {
+            return mainCamera;
+        }
+
+        public V3 getEyes()
+        {
+            return mainCamera.eyes;
+        }
+
+        public void draw()
+        {
+            /*foreach (GameObject o in gameObjects)
+                 o.draw(pas, this);*/
+
+           mainCamera.generateView();
+        }
+    }
+
+    
+}

@@ -1,0 +1,10 @@
+﻿namespace Projet_IMA
+{
+     class BumpMapping
+    {
+        public void generateNewNormal(ref Point p)
+        {
+
+        }
+    }
+}

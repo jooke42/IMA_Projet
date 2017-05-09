@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    static class ProjetEleve
+    {
+        public static List<Sphere> spheres;
+        public static V3 eyes;
+
+        
+
+
+        public static void DrawSphere(Sphere s,float pas , int[,] zBuffer,List<Lamp> lights)
+        {
+
+            for (float u = 0; u <= 2 * IMA.PI; u += pas)
+            {
+                for (float v = (-IMA.PI) / 2; v <= IMA.PI / 2; v += pas)
+                {
+                    Point p = s.generatePoint(u, v);
+
+                    int ecran_x = (int)p.position.x;
+                    int ecran_y = (int)p.position.z;
+                    int ecran_depth = (int)p.position.y;
+                
+                    if (zBuffer[ecran_x,ecran_y] > ecran_depth)
+                    {
+                        foreach (Lamp lamp in lights)
+                            lamp.apply(ref p);
+
+                        BitmapEcran.DrawPixel(ecran_x, ecran_y, p.couleur);
+                        zBuffer[ecran_x, ecran_y] = ecran_depth;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        public static void Go()
+        {
+
+            ProjetEleve.spheres = new List<Sphere>();
+            List<Lamp> lamps = new List<Lamp>();
+            
+            int larg = BitmapEcran.GetWidth();
+            int haut = BitmapEcran.GetHeight();
+            int[,] z_buffer = new int[larg, haut];
+            Texture testText = new Texture("uvtest.jpg");
+            Texture gold = new Texture("gold.jpg");
+            BumpMapping goldBump = new BumpMapping(new Texture("gold_bump.jpg"));
+            Texture lead = new Texture("lead.jpg");
+            BumpMapping leadBump = new BumpMapping(new Texture("lead_bump.jpg"));
+            Texture bump38 = new Texture("bump38.jpg");
+            float pas = 0.01f;
+            Couleur Green = new Couleur(0.0f, 1.0f, 0.0f);
+            Couleur Red = new Couleur(1.0f, 0.0f, 0.0f);
+
+            for (int i = 0; i < 1000; i++)
+                BitmapEcran.DrawPixel(i, i, Red);
+
+            for (int i = 0; i < 1000; i++)
+                BitmapEcran.DrawPixel(i, 1000 - i, Green);
+
+            float distEyes = -1.5f * 2160;
+            eyes = new V3(2160 / 2,distEyes , 1440 / 2);
+
+            AmbiantLight ambiantLight = new AmbiantLight();
+            DiffuseLight diffuseLight = new DiffuseLight();
+            SpecularLight specularLight = new SpecularLight();
+
+            lamps.Add(
+                new LampAmbiant(
+                    new Couleur(0.20f, 0.20f, 0.20f),
+                    new V3(0, 0, 0),
+                    new List<LightModel> {ambiantLight}
+                    )
+                );
+
+          lamps.Add(
+               new DirectionalLamp(
+                   new Couleur(1f, 1f, 1f),
+                   new V3(0, 0, 0),//pos
+                   new List<LightModel> {diffuseLight,specularLight}, // lights effects
+                   new V3(-1,1,-1)//direction
+                   )
+               );
+
+
+            spheres.Add(new Sphere(new V3(200, 0, 200), 100, Red,gold, goldBump));
+            spheres.Add(new Sphere(new V3(450, 0, 200), 100,Green,lead, leadBump));
+           
+            foreach (Sphere sphere in spheres)
+                DrawSphere(sphere, pas,z_buffer,lamps);
+            
+
+      
+        }
+    }
+}

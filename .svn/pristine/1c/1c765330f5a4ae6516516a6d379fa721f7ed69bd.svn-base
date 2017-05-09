@@ -1,0 +1,31 @@
+﻿namespace Projet_IMA
+{
+     class BumpMapping
+    {
+        public Texture bumpMap;
+        public float k = 0.5f;
+
+        public BumpMapping(Texture _bumpMap, float _k  = 0.5f)
+        {
+            this.bumpMap = _bumpMap;
+            this.k = _k;
+        }
+
+        public void generateNewNormal(ref Point p)
+        {
+            float dhdu, dhdv;
+            V3 dmdu= new V3(), dmdv= new V3();
+            bumpMap.Bump(p.u, p.v, out dhdu, out dhdv);
+            dmdu.x = IMA.Sinf(p.u) * (-IMA.Cosf(p.v));
+            dmdu.y = IMA.Cosf(p.u) * IMA.Cosf(p.v);
+            dmdu.z = 0;
+
+            dmdv.x = -IMA.Cosf(p.u) * IMA.Sinf(p.v);
+            dmdv.y = -IMA.Sinf(p.u) * IMA.Sinf(p.v);
+            dmdv.z = IMA.Cosf(p.v);
+
+            p.normal = p.normal + k * ((dmdu ^ (dhdv * p.normal))+((dhdu * p.normal)^ dmdv));
+
+        }
+    }
+}

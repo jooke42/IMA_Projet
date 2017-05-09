@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    abstract class GameObject
+    {
+        
+        public V3 position;
+        public Couleur couleur;
+        public Texture texture;
+        public BumpMapping bumpMap;
+
+        public GameObject(V3 _position, Couleur _couleur, Texture _texture = null, BumpMapping _bumpMap = null)
+        {
+            this.position = _position;
+            this.couleur = _couleur;
+            this.texture = _texture;
+            this.bumpMap = _bumpMap;
+        }
+
+        public abstract Couleur getPointBasicColor(Point p);
+
+        public abstract Point generatePoint(float u, float v);
+
+        public abstract void derivative(float u, float v, out V3 dmdu, out V3 dmdv);
+
+        public abstract void draw(float pas, List<Lamp> lights);
+
+    }
+}

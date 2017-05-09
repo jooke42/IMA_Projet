@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Projet_IMA
+{
+    struct Point
+    {
+        public V3 position;
+        public Couleur couleur;
+        public Sphere sphere;
+        public float u, v;
+        public V3 normal;
+    }
+    class Sphere
+    {
+        public Texture texture;
+        public float rayon;
+        public V3 centre;
+        public Couleur couleur;
+        public BumpMapping bumpMap;
+
+        public Sphere(V3 _centre,float _rayon,Couleur _couleur,Texture _texture = null,BumpMapping _bumpMap = null)
+        {
+            this.centre = _centre;
+            this.rayon = _rayon;
+            this.couleur = _couleur;
+            this.texture =  _texture;
+            this.bumpMap = _bumpMap;
+        }
+
+        public Couleur getPointBasicColor(Point p)
+        {
+            if(texture == null)
+                return couleur;
+
+            float  u_texture, v_texture;
+            
+
+            u_texture = p.u / (2 * IMA.PI);
+            v_texture = (p.v + IMA.PI / 2) * (1 / IMA.PI);
+
+            return texture.LireCouleur(u_texture,1-v_texture);
+
+        }
+
+
+    }
+}

@@ -55,8 +55,8 @@ namespace Projet_IMA
 
 
             gameObjects.Add(new Sphere(new V3(0, 200, 0), 200, Red, testText));
-            gameObjects.Add(new Sphere(new V3(350, 500, 200), 200, Green, testText));
-            gameObjects.Add(new Rectangle(new V3(0, 250, 0), new V3(900, 0, 0), new V3(0, 0, 550), Green, lead, bump38));
+            //gameObjects.Add(new Sphere(new V3(350, 500, 200), 200, Green, lead, leadBump));
+            //gameObjects.Add(new Rectangle(new V3(0, 250, 0), new V3(900, 0, 0), new V3(0, 0, 550), Green, lead, bump38));
 
          
         }
@@ -91,6 +91,9 @@ namespace Projet_IMA
 
         public void draw()
         {
+            /*foreach (GameObject o in gameObjects)
+                 o.draw(pas, this);*/
+
            mainCamera.generateView();
         }
     }

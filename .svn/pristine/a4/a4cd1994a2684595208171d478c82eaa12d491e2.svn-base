@@ -34,7 +34,7 @@ namespace Projet_IMA
             u_texture = p.u / (2 * IMA.PI);
             v_texture = (p.v + IMA.PI / 2) * (1 / IMA.PI);
 
-            return texture.LireCouleur(1-u_texture,1-v_texture);
+            return texture.LireCouleur(u_texture,1-v_texture);
 
         }
 
@@ -78,7 +78,7 @@ namespace Projet_IMA
         }
 
         public override void derivative(float u, float v, out V3 dmdu, out V3 dmdv)
-        { 
+        {
             dmdu = new V3();
             dmdv = new V3();
 
@@ -92,18 +92,17 @@ namespace Projet_IMA
         public override bool getIntersectPoint(V3 camPos, V3 dirRayon, out float newt)
         {
             float t1, t2;
-            float a, b,c, delta, deltaSqrt;
-            V3 centre = this.position;
+            float a, b, c, delta, deltaSqrt;
             a = dirRayon * dirRayon;
-            b = (camPos- centre)*2*dirRayon;
-            c =(camPos*camPos) - (2 * camPos * centre)+(centre * centre) - (this.rayon * this.rayon);
+            b = 2 * dirRayon * camPos - 2 * this.position * dirRayon;
+            c = this.position * this.position - 2 * this.position * camPos + camPos * camPos - this.rayon * this.rayon;
             newt = 0;
-            delta = (b * b) - (4 * a * c);
+            delta = b * b - 4 * a * c;
             if (delta < 0)
                 return false;
             deltaSqrt = IMA.Sqrtf(delta);
-            t1 = (-b + deltaSqrt) / (2*a);
-            t2 = (-b - deltaSqrt) / (2*a);
+            t1 = -b + deltaSqrt / 2*a;
+            t2 = -b - deltaSqrt / 2*a;
             if (t1 > 0 && t2 > 0)
             {
                 newt = t1;

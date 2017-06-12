@@ -60,7 +60,13 @@ namespace Projet_IMA
             V3 centered = selectGameObject.getCenteredPoint(pPos);
             selectGameObject.finduv(centered, out u, out v);
             p = selectGameObject.generatePoint(u, v);
-           foreach (Lamp l in ProjetEleve.scene.lamps)
+
+            //apply bumpMap
+            if (p.gameObject.bumpMap != null)
+                p.gameObject.bumpMap.generateNewNormal(ref p);
+
+            //apply lights
+            foreach (Lamp l in ProjetEleve.scene.lamps)
                 l.apply(ref p);
             return true;
         }

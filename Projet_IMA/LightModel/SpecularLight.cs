@@ -23,9 +23,9 @@ namespace Projet_IMA
                 V3 N = p.normal;
                 V3 D = ProjetEleve.scene.getEyes() - p.position;
                 D.Normalize();
-                V3 R = cosAlpha * N;
+                V3 R = 2*(cosAlpha * N) + lamp.direction;
                 R.Normalize();
-                p.couleur += lamp.getCouleur() * (float)Math.Pow(V3.prod_scal(ref D, ref R), specularPower);
+                p.couleur += lamp.getCouleur() * (float)Math.Pow(R*D, specularPower);
             }
            
         }

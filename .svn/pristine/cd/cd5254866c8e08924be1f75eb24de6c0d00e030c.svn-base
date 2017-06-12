@@ -37,12 +37,7 @@ namespace Projet_IMA
             return texture.LireCouleur(u_texture,1-v_texture);
 
         }
-        public override void getCoordBumpMap(Point p,out float u_bump,out float v_bump)
-        {
-            u_bump = p.u / (2 * IMA.PI);
-            v_bump = 1-((p.v + IMA.PI / 2) * (1 / IMA.PI));
 
-        }
         public override Point generatePoint(float u, float v)
         {
             Point p = new Point();
@@ -52,7 +47,9 @@ namespace Projet_IMA
             p.position = this.rayon * p.normal + this.position;
             p.u = u;
             p.v = v;
-            
+
+            if (this.bumpMap != null)
+                this.bumpMap.generateNewNormal(ref p);
 
             return p;
         }
@@ -96,22 +93,17 @@ namespace Projet_IMA
         {
             float t1, t2;
             float a, b,c, delta, deltaSqrt;
-
             V3 centre = this.position;
-
             a = dirRayon * dirRayon;
             b = (camPos- centre)*2*dirRayon;
             c =(camPos*camPos) - (2 * camPos * centre)+(centre * centre) - (this.rayon * this.rayon);
-
             newt = 0;
             delta = (b * b) - (4 * a * c);
-
             if (delta < 0)
                 return false;
-
             deltaSqrt = IMA.Sqrtf(delta);
-            t1 = (-b - deltaSqrt) / (2*a);
-            t2 = (-b + deltaSqrt) / (2*a);
+            t1 = (-b + deltaSqrt) / (2*a);
+            t2 = (-b - deltaSqrt) / (2*a);
             if (t1 > 0 && t2 > 0)
             {
                 newt = t1;

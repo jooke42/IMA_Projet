@@ -12,11 +12,6 @@ namespace Projet_IMA
 
         public static void Go()
         {
-
-            scene = new Scene();
-
-            scene.init();
-
             scene.draw();
 
         }

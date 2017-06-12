@@ -11,7 +11,7 @@ namespace Projet_IMA
         public override void apply(ref Point p, Lamp lamp)
         {
             V3 l = -lamp.direction;
-            float angle = V3.prod_scal(ref p.normal, ref l);
+            float angle = p.normal * l;
             if(angle > 0)
                 p.couleur += (lamp.getCouleur() * p.gameObject.getPointBasicColor(p))*(angle);
         }

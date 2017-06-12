@@ -10,7 +10,7 @@ namespace Projet_IMA
         public List<GameObject> gameObjects = new List<GameObject>();
         public List<Lamp> lamps = new List<Lamp>();
         public Camera mainCamera;
-        public float pas = 0.005f;
+        public float pas = 0.001f;
 
         public Scene()
         {
@@ -25,12 +25,10 @@ namespace Projet_IMA
             Texture testText = new Texture("uvtest.jpg");
             Texture testTextRect = new Texture("test.jpg");
             Texture gold = new Texture("gold.jpg");
-            BumpMapping goldBump = new BumpMapping(new Texture("gold_bump.jpg"), 0.5f);
+            BumpMapping goldBump = new BumpMapping(new Texture("gold_bump.jpg"));
             Texture lead = new Texture("lead.jpg");
-            BumpMapping leadBump = new BumpMapping(new Texture("lead_bump.jpg"),0.3f);
-            BumpMapping bump38 = new BumpMapping(new Texture("bump38.jpg"),0.5f);
-            BumpMapping bump1 = new BumpMapping(new Texture("bump1.jpg"), 1.5f);
-            Texture stone = new Texture("stone2.jpg");
+            BumpMapping leadBump = new BumpMapping(new Texture("lead_bump.jpg"));
+            BumpMapping bump38 = new BumpMapping(new Texture("bump.jpg"), 0.6f);
             
             Couleur Green = new Couleur(0.0f, 1.0f, 0.0f);
             Couleur Red = new Couleur(1.0f, 0.0f, 0.0f);
@@ -39,37 +37,30 @@ namespace Projet_IMA
             DiffuseLight diffuseLight = new DiffuseLight();
             SpecularLight specularLight = new SpecularLight();
 
-           /* lamps.Add(
+            lamps.Add(
               new LampAmbiant(
                   new Couleur(0.20f, 0.20f, 0.20f),
                   new V3(0, 0, 0),
                   new List<LightModel> { ambiantLight }
                   )
-              );*/
+              );
 
             lamps.Add(
                  new DirectionalLamp(
-                     new Couleur(0.6f,0.6f, 0.6f),
+                     new Couleur(1f, 1f, 1f),
                      new V3(0, 0, 0),//pos
                      new List<LightModel> { diffuseLight, specularLight }, // lights effects
-                     new V3(0, 1, -1)//direction
+                     new V3(-1, 1, -1)//direction
                      )
                  );
 
-            gameObjects.Add(new Sphere(new V3(50,50, 0), 10, Green)); // A
-            gameObjects.Add(new Sphere(new V3(BitmapEcran.GetWidth(), 50, 0), 10, Green)); //B
 
-            gameObjects.Add(new Sphere(new V3(50, 250, 0), 10, Red)); //C
-            gameObjects.Add(new Sphere(new V3(BitmapEcran.GetWidth(), 250, 0), 10, Red)); // D
+            gameObjects.Add(new Sphere(new V3(0, 200, 0), 200, Red, testText));
+            gameObjects.Add(new Sphere(new V3(350, 500, 200), 200, Green, testText));
+            gameObjects.Add(new Rectangle(new V3(0, 600, 0),
+                new V3(500, 0, 0), new V3(0, -500, 500), Green, testTextRect));
 
-            gameObjects.Add(new Rectangle(new V3(50, 50, 0), new V3(1, 0, 0),new V3(0,1,0),
-                BitmapEcran.GetWidth() - 50, 600, Green, stone, bump1));
-            gameObjects.Add(new Rectangle(new V3(50, 650, 0), new V3(1, 0, 0), new V3(0, 0, 1),
-                BitmapEcran.GetWidth() - 50, 600, Green, stone, bump1));
-            gameObjects.Add(new Rectangle(new V3(50, 50, 0), new V3(1, 0, 0), new V3(0, 0, 1),
-                BitmapEcran.GetWidth() - 50, 600, Green, stone, bump1));
-            gameObjects.Add(new Rectangle(new V3(50, 650, 0), new V3(1, 0, 0), new V3(0, 0, 1),
-                BitmapEcran.GetWidth() - 50, 600, Green, stone, bump1));
+         
         }
 
         public void drawPoint(ref Point p)
@@ -102,8 +93,8 @@ namespace Projet_IMA
 
         public void draw()
         {
-          mainCamera.generateView();
-          /* foreach (GameObject g in gameObjects)
+           mainCamera.generateView();
+           /* foreach (GameObject g in gameObjects)
                 g.draw(pas,this);*/
         }
     }

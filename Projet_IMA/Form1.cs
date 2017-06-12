@@ -16,6 +16,9 @@ namespace Projet_IMA
         {
             InitializeComponent();
             pictureBox1.Image = BitmapEcran.Init(pictureBox1.Width, pictureBox1.Height);
+            ProjetEleve.scene = new Scene();
+            ProjetEleve.scene.init();
+
         }
 
         public bool Checked()               { return checkBox1.Checked;   }
@@ -28,5 +31,9 @@ namespace Projet_IMA
             ProjetEleve.Go();
             BitmapEcran.Show();          
         }
+
+        
+
+        
     }
 }

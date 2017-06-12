@@ -34,6 +34,8 @@ namespace Projet_IMA
 
         public abstract void finduv(V3 p, out float u, out float v);
 
+        public abstract void getCoordBumpMap(Point p, out float u_bump, out float v_bump);
+
         public V3 getCenteredPoint(V3 pPos)
         {
             return pPos - this.position;

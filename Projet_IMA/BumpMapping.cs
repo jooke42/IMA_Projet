@@ -13,12 +13,16 @@
 
         public void generateNewNormal(ref Point p)
         {
-            float dhdu, dhdv;
+            float dhdu, dhdv,u_bump,v_bump;
             V3 dmdu, dmdv;
-            bumpMap.Bump(p.u, p.v, out dhdu, out dhdv);
+            p.gameObject.getCoordBumpMap(p, out u_bump,out  v_bump);
+
+            this.bumpMap.Bump(u_bump, v_bump, out dhdu, out dhdv);
+
             p.gameObject.derivative(p.u, p.v, out dmdu, out dmdv);
             
             p.normal = p.normal + k * ((dmdu ^ (dhdv * p.normal))+((dhdu * p.normal)^ dmdv));
+            p.normal.Normalize();
 
         }
     }
